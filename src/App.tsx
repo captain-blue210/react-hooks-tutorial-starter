@@ -4,6 +4,7 @@ import { BookToRead } from "./BookToRead";
 import BookRow from "./BookRow";
 import Modal from "react-modal";
 import BookSearchDialog from "./BookSearchDialog";
+import {BookDescription} from "./BookDescription";
 
 Modal.setAppElement("#root");
 
@@ -22,29 +23,8 @@ const customStyles = {
   }
 };
 
-const dummyBooks: BookToRead[] = [
-  {
-    id: 1,
-    title: "はじめてのReact",
-    authors: "ダミー",
-    memo: ""
-  },
-  {
-    id: 2,
-    title: "React Hooks入門",
-    authors: "ダミー",
-    memo: ""
-  },
-  {
-    id: 3,
-    title: "実践Reactアプリケーション開発",
-    authors: "ダミー",
-    memo: ""
-  }
-];
-
 const App = () => {
-  const [books, setBooks] = useState(dummyBooks);
+  const [books, setBooks] = useState([] as BookToRead[]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handleAddClick = () => {
@@ -66,6 +46,13 @@ const App = () => {
     });
     setBooks(newBooks);
   };
+
+  const handleBookAdd = (book: BookDescription) => {
+    const newBook: BookToRead = { ...book, id: books.length + 1, memo: ""};
+    const newBooks = [...books, newBook];
+    setBooks(newBooks);
+    setModalIsOpen(false);
+  }
 
   const bookRows = books.map((b) => {
     return (
@@ -92,7 +79,7 @@ const App = () => {
         onRequestClose={handleModalClose}
         style={customStyles}
       >
-        <BookSearchDialog maxResults={20} onBookAdd={(b) => {}} />
+        <BookSearchDialog maxResults={20} onBookAdd={(b) => handleBookAdd(b)} />
       </Modal>
     </div>
   )
